@@ -82,7 +82,8 @@
         $("body").append("<h5 />")
 
         $("h5").text("<span>This is entered as text</span>")
-
+        $("p").find("span")
+        
         async function abc() {
             rsp = await $.get("https://cex.io/api/ohlcv2/hd/20210202/BTC/USD")
             $("textarea").val(JSON.stringify(rsp))

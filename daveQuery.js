@@ -136,6 +136,13 @@ class ElementCollection extends Array {
         return $(this[0].lastElementChild)
     }
 
+    find(selector){
+        var selected=new ElementCollection([])
+        this.forEach((elem)=>{            
+            selected=selected.concat($(selector,elem))
+        })
+        return selected
+    }
 
     // content
 
@@ -185,7 +192,9 @@ class ElementCollection extends Array {
 
 }
 
-var $ = function (selector) {
+var $ = function (selector,from) {
+
+    from=from ?? document
 
     if (typeof selector === 'string' || selector instanceof String) {
         if (selector.startsWith("<")) {
@@ -194,7 +203,7 @@ var $ = function (selector) {
             return new ElementCollection(...doc.body.childNodes)
         }
         // is selector string
-        return new ElementCollection(...document.querySelectorAll(selector))
+        return new ElementCollection(...from.querySelectorAll(selector))
     }
     if (!Array.isArray(selector)) selector=new ElementCollection(selector)
     // is already an array
