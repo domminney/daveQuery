@@ -24,7 +24,7 @@ class ElementCollection extends Array {
     // class
 
     toggleClass(cls) {
-        this.forEach((elem) => {            
+        this.forEach((elem) => {
             elem.classList.toggle(cls)
         })
         return this
@@ -66,6 +66,7 @@ class ElementCollection extends Array {
     append(appendObj) {
         this.forEach((elem) => {
             var aoa = $(appendObj)
+            console.log(aoa)
             aoa.forEach((ao) => {
                 elem.append(ao)
 
@@ -104,7 +105,7 @@ class ElementCollection extends Array {
 
     attr(attr, val) {
         if (typeof val === 'undefined') {
-            return this[0].elem.getAttribute(attr)
+            return this[0].getAttribute(attr)
         }
 
         this.forEach((elem) => {
@@ -120,19 +121,19 @@ class ElementCollection extends Array {
     // return other dom elements
 
     next() {
-        return this[0].nextElementSibling
+        return $(this[0].nextElementSibling)
     }
 
     prev() {
-        return this[0].previousElementSibling
+        return $(this[0].previousElementSibling)
     }
 
     firstChild() {
-        return this[0].firstElementChild
+        return $(this[0].firstElementChild)
     }
 
     lastChild() {
-        return this[0].lastElementChild
+        return $(this[0].lastElementChild)
     }
 
 
@@ -167,6 +168,21 @@ class ElementCollection extends Array {
         return this
     }
 
+    // form
+
+    val(val){
+        if (typeof val === 'undefined'){
+            if (this.length){
+                return this[0].value.toString()
+            }
+            return ''
+        }
+        if (this.length){
+            this[0].value=val
+        }
+        return this
+    }
+
 }
 
 var $ = function (selector) {
@@ -180,6 +196,7 @@ var $ = function (selector) {
         // is selector string
         return new ElementCollection(...document.querySelectorAll(selector))
     }
+    if (!Array.isArray(selector)) selector=new ElementCollection(selector)
     // is already an array
     return new ElementCollection(...selector)
 }
@@ -199,13 +216,9 @@ $.fetch = async function (url, body, token, method, headers, otherSettings) {
 
     method = method ?? 'POST'
 
-    if (method === 'POST') {
-        settings.headers['Content-Type'] = 'application/json'
-    }
+    if (method === 'POST') settings.headers['Content-Type'] = 'application/json'
 
-    if (body) {
-        settings.body = JSON.stringify(body)
-    }
+    if (body) settings.body = JSON.stringify(body)
 
     if (token) settings.headers.token = token
 
