@@ -1,3 +1,6 @@
+// This is a jQuery replacement designed to only do the things I used jQuery for with a few differences
+// Inspired by Web Dev Simplified's YouTube Video About jQuery Replacement
+
 class ElementCollection extends Array {
 
     // events
