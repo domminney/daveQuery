@@ -144,7 +144,7 @@ class ElementCollection extends Array {
         return selected
     }
 
-    // content
+    // text & html content
 
     html(obj) {
         if (typeof obj !== 'undefined') {
