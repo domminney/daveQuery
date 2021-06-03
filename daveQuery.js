@@ -24,12 +24,8 @@ class ElementCollection extends Array {
     // class
 
     toggleClass(cls) {
-        this.forEach((elem) => {
-            if (elem.classList.contains(cls)) {
-                elem.classList.remove(cls)
-                return false
-            }
-            elem.classList.add(cls)
+        this.forEach((elem) => {            
+            elem.classList.toggle(cls)
         })
         return this
     }
