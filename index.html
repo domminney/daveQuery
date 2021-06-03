@@ -1,246 +1,100 @@
-// This is a jQuery replacement designed to only do the things I used jQuery for with a few differences
-// Inspired by Web Dev Simplified's YouTube Video About jQuery Replacement
+<!DOCTYPE html>
+<html lang="en">
 
-class ElementCollection extends Array {
-
-    // events
-
-    on(evt, fn) {
-        this.forEach((elem) => {
-            // check if function is really string and turn to function
-            if (typeof fn === 'string' || fn instanceof String) {
-                fn = Function(fn)
-            }
-            elem.addEventListener(evt, fn)
-        })
-        return this
-    }
-
-    click(fn) {
-        this.on("click", fn)
-        return this
-    }
-
-    // class
-
-    toggleClass(cls) {
-        this.forEach((elem) => {
-            elem.classList.toggle(cls)
-        })
-        return this
-    }
-
-    removeClass(cls) {
-        this.forEach((elem) => {
-            elem.classList.remove(cls)
-        })
-        return this
-    }
-
-    addClass(cls) {
-        this.forEach((elem) => {
-            elem.classList.add(cls)
-        })
-        return this
-    }
-
-    // css
-
-    css(p1, p2) {
-        if (typeof p1 === 'object') {
-            this.forEach((elem) => {
-                Object.keys(p1).forEach((k) => {
-                    elem.style[k] = p1[k]
-                })
-            })
-            return this
-        }
-        this.forEach((elem) => {
-            elem.style[p1] = p2
-        })
-        return this
-    }
-
-    // dom element insert & removal
-
-    append(appendObj) {
-        this.forEach((elem) => {
-            var aoa = $(appendObj)
-            console.log(aoa)
-            aoa.forEach((ao) => {
-                elem.append(ao)
-
-            })
-        })
-        return this
-    }
-
-    prepend(prependObj) {
-        this.forEach((elem) => {
-            var poa = $(prependObj).reverse()
-            poa.forEach((po) => {
-                elem.prepend(po)
-            })
-        })
-        return this
-    }
-
-    appendTo(appendToObj) {
-        $(appendToObj).append(this)
-        return this
-    }
-
-    prependTo(prependToObj) {
-        $(prependToObj).prepend(this)
-        return this
-    }
-
-    remove() {
-        this.forEach((elem) => {
-            elem.remove()
-        })
-    }
-
-    // attributes
-
-    attr(attr, val) {
-        if (typeof val === 'undefined') {
-            return this[0].getAttribute(attr)
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>testing daveQuery</title>
+    <script src="daveQuery.js"></script>
+    <style>
+        .selected {
+            color: red;
         }
 
-        this.forEach((elem) => {
-            elem.setAttribute(attr, val)
+        span {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        textarea {
+            height: 20rem;
+            width: 20rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="testcontainer">
+        <h1 class="test1">h1 1</h1>
+
+        <p class="test2">p 2</p>
+
+        <p class="test3">p 3</p>
+
+        <textarea>
+
+        </textarea>
+    </div>
+
+    <script>
+
+        $('p').prepend("<span>2 Spans</span><span>Prepended to each p element</span>")
+        $('.test1').append("<span>Appending to title</span>")
+        $("textarea").click("alert('THIS IS THE CONTENT OF TEXTAREA TAKEN FROM THE API\\n\\n' + $('textarea').val())")
+
+        $('h1').on("mouseover",function(){
+            $(this).css("color","red").css({fontSize:"3rem"})
         })
-        return this
-    }
 
-    data(key, val) {
-        return this.attr("data-" + key, val)
-    }
-
-    // return other dom elements
-
-    next() {
-        return $(this[0].nextElementSibling)
-    }
-
-    prev() {
-        return $(this[0].previousElementSibling)
-    }
-
-    firstChild() {
-        return $(this[0].firstElementChild)
-    }
-
-    lastChild() {
-        return $(this[0].lastElementChild)
-    }
-
-
-    // content
-
-    html(obj) {
-        if (typeof obj !== 'undefined') {
-            this.forEach((elem) => {
-                obj = $(obj)
-                while (elem.firstChild) {
-                    elem.firstChild.remove()
-                }
-                obj.forEach((o) => {
-                    elem.append(o)
-                })
-            })
-            return this
-        }
-        return this[0].innerHTML
-    }
-
-    text(text) {
-        if (typeof text === 'undefined') {
-            return this[0].innerText
-        }
-        this.forEach((elem) => {
-            while (elem.firstChild) {
-                elem.firstChild.remove()
-            }
-            elem.innerText = text
+        $("textarea").click(function () {
+            $("textarea").val("")
         })
-        return this
-    }
 
-    // form
+        $(".test3").addClass("selected").on("mouseout",function(){$(this).toggleClass("selected")})
 
-    val(val){
-        if (typeof val === 'undefined'){
-            if (this.length){
-                return this[0].value.toString()
-            }
-            return ''
-        }
-        if (this.length){
-            this[0].value=val
-        }
-        return this
-    }
+        $("div").removeClass("testcontainer")
 
-}
+        $("div").append("<p class='appended'>I am appending this</p>")
 
-var $ = function (selector) {
+        $("body").append($(".appended"))
 
-    if (typeof selector === 'string' || selector instanceof String) {
-        if (selector.startsWith("<")) {
-            // is html
-            var doc = new DOMParser().parseFromString(selector, "text/html")
-            return new ElementCollection(...doc.body.childNodes)
-        }
-        // is selector string
-        return new ElementCollection(...document.querySelectorAll(selector))
-    }
-    if (!Array.isArray(selector)) selector=new ElementCollection(selector)
-    // is already an array
-    return new ElementCollection(...selector)
-}
+        $("<h3>This is some HTML I Am Appending To</h3>").appendTo("div").click(function(){
+            $(this).remove()
+        })
+        $("<h3>This is some HTML I Am Prepending To</h3>").prependTo("div")
 
-$.fetch = async function (url, body, token, method, headers, otherSettings) {
+        $(".test2").attr("style","font-size:20px").data("test","testing")
 
-    otherSettings = otherSettings ?? {}
+        console.log($(".test2").data("test"))
+        console.log($("div").firstChild())
+        console.log($("div").lastChild())
+        console.log($("div").firstChild().next())
+        console.log($("div").lastChild().prev())
 
-    var settings = {
-        method: method,
-        headers: {
-            'Accept': '*/*',
-            ...headers
-        },
-        ...otherSettings
-    }
+        $("div").append("<p>a</p>")
 
-    method = method ?? 'POST'
+        $("body").lastChild().html("<span>HTML</span>")
+        console.log($("div").html())
+        console.log($("div").text())
+    
+        $("body").append("<h5 />")
 
-    if (method === 'POST') settings.headers['Content-Type'] = 'application/json'
+        $("h5").text("<span>This is entered as text</span>")
 
-    if (body) settings.body = JSON.stringify(body)
-
-    if (token) settings.headers.token = token
-
-    try {
-        var fetchResponse = await fetch(url, settings)
-        var data = await fetchResponse.text()
-        try {
-            data = JSON.parse(data)
-            return data
-        } catch (e2) {
-            return data
+        async function abc() {
+            rsp = await $.get("https://cex.io/api/ohlcv2/hd/20210202/BTC/USD")
+            $("textarea").val(JSON.stringify(rsp))
         }
 
-    } catch (e) {
-        return e
-    }
-}
+        abc()
 
-$.post = async function (url, body, token) {
-    return await $.fetch(url, body, token, "POST")
-}
 
-$.get = async function (url, token) {
-    return await $.fetch(url, false, token, "GET")
-}
+
+    </script>
+
+
+</body>
+
+</html>
