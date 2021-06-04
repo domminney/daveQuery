@@ -1,81 +1,115 @@
-body{
-    --dqFormElementBgColor:#222;
-    --dqFormElementFgColor:#fff;
-    --dqFormElementBorderColor:#555;
-    --dqFormToggleOnColor:#0c0;
-    --dqFormToggleOffColor:#777;
-    --dqFormLabelTextColor:hsl(200, 100%, 80%);    
-    --dqFormListElementBgColor:#111;
-    --dqFormListElementBorderColor:#444;
-    --dqFormElementPadding:.5rem;
+body {
+  --dqFormElementBgColor: #222;
+  --dqFormElementFgColor: #fff;
+  --dqFormElementBorderColor: #555;
+  --dqFormToggleOnColor: #0c0;
+  --dqFormToggleOffColor: #777;
+  --dqFormLabelTextColor: hsl(200, 100%, 80%);
+  --dqFormListElementBgColor: #111;
+  --dqFormListElementBorderColor: #444;
+  --dqFormElementPadding: 0.5rem;
 }
 
-.dq--formitem{
-    box-sizing: border-box;
-    cursor: pointer;
-    padding: var(--dqFormElementPadding);
+.dq--formitem {
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: var(--dqFormElementPadding);
 }
 
-.dq--formitem label{
-    user-select: none;    
-    color: var(--dqFormLabelTextColor);
-    cursor: pointer;
+/*tick & toggle*/
+
+.dq--formitem label {
+  user-select: none;
+  color: var(--dqFormLabelTextColor);
+  cursor: pointer;
 }
 
-.dq--toggle--container,.dq--tick--container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--dqFormListElementBgColor);
-    border-bottom: 1px solid var(--dqFormListElementBorderColor);
+.dq--toggle--container,
+.dq--tick--container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--dqFormListElementBgColor);
+  border-bottom: 1px solid var(--dqFormListElementBorderColor);
 }
 
-.dq--toggle--container .dq--toggle--switch{
-    background-color: var(--dqFormElementBgColor);
-    border: 1px solid var(--dqFormElementBorderColor);
-    border-radius: 1.5rem;
-    width:4.5rem;
-    height:2.8rem;
-    display: block;
+.dq--toggle--container .dq--toggle--switch {
+  background-color: var(--dqFormElementBgColor);
+  border: 1px solid var(--dqFormElementBorderColor);
+  border-radius: 1.5rem;
+  width: 4.5rem;
+  height: 2.8rem;
+  display: block;
+  box-shadow: 0 0 1px 0px var(--dqFormElementBorderColor) inset,
+    0 0 1px 0px var(--dqFormElementBorderColor);
 }
 
-.dq--toggle--container .dq--toggle--switch::after{
-    background-color: var(--dqFormToggleOffColor);
-    content: '';
-    width:2.4rem;
-    height:2.4rem;
-    display: block;
-    border-radius: 50%;
-    margin: 0.2rem;
-    transition: all 150ms ease-in-out;
+.dq--toggle--container .dq--toggle--switch::after {
+  background-color: var(--dqFormToggleOffColor);
+  content: "";
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+  border-radius: 50%;
+  margin: 0.2rem;
+  transition: all 150ms ease-in-out;
 }
 
-.dq--toggle--container.dq--checked .dq--toggle--switch::after{
-    margin: 0.2rem 0.2rem 0.2rem 1.9rem;
-    background-color: var(--dqFormToggleOnColor);
+.dq--toggle--container.dq--checked .dq--toggle--switch::after {
+  margin: 0.2rem 0.2rem 0.2rem 1.9rem;
+  background-color: var(--dqFormToggleOnColor);
 }
 
-
-.dq--tick--container .dq--tick--switch{
-    background-color: var(--dqFormElementBgColor);
-    border: 1px solid var(--dqFormElementBorderColor);
-    border-radius: 1.5rem;
-    width:2.8rem;
-    height:2.8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
+.dq--tick--container .dq--tick--switch {
+  background-color: var(--dqFormElementBgColor);
+  border: 1px solid var(--dqFormElementBorderColor);
+  border-radius: 1.5rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0 0 1px 0px var(--dqFormElementBorderColor) inset,
+    0 0 1px 0px var(--dqFormElementBorderColor);
 }
 
-.dq--tick--container .dq--tick--switch::after{
-    color: var(--dqFormToggleOnColor);
-    content: '✓';
-    font-size: 2rem;    
-    transition: all 150ms ease-in-out;
-    opacity: 0;
+.dq--tick--container .dq--tick--switch::after {
+  color: var(--dqFormToggleOnColor);
+  content: "✓";
+  font-size: 2rem;
+  transition: all 150ms ease-in-out;
+  opacity: 0;
 }
 
-.dq--tick--container.dq--checked .dq--tick--switch::after{
-    opacity: 1;
+.dq--tick--container.dq--checked .dq--tick--switch::after {
+  opacity: 1;
+}
+
+/*list items*/
+
+.dq--list--item {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  background-color: var(--dqFormListElementBgColor);
+  border-bottom: 1px solid var(--dqFormElementBorderColor);
+  user-select: none;
+}
+
+.dq--list--item--image img {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  border-color: var(--dqFormElementBorderColor);
+  background-color: #fff;
+  object-fit: cover;
+  box-shadow: 0 0 1px 0px var(--dqFormElementBorderColor) inset,
+    0 0 1px 0px var(--dqFormElementBorderColor);
+}
+
+.dq--list--item--image p {
+  margin: 0 1rem;
+  padding: 0;
+  color: var(--dqFormLabelTextColor);
 }

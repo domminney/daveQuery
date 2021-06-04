@@ -9,7 +9,7 @@
     <script src="daveQuery.js"></script>
     <link rel="stylesheet" href="daveQuery.css">
     <style>
-        body{
+        body {
             background-color: black;
             font-family: "montserrat", "arial";
             margin: 0;
@@ -20,17 +20,37 @@
 
 <body>
 
+    <div class="dq-imglist">
+        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 1"
+            src="https://unpkg.com/ionicons@5.5.1/dist/svg/bag.svg">
+        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 2"
+            src="https://unpkg.com/ionicons@5.5.1/dist/svg/boat.svg">
+        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 3"
+            src="https://unpkg.com/ionicons@5.5.1/dist/svg/calendar.svg">
+    </div>
+
     <div class="testcontainer">
 
         <input type="checkbox" class="dq-toggle" data-label="Test Toggle 1">
         <input type="checkbox" class="dq-toggle" data-label="Test Toggle 2">
         <input type="checkbox" class="dq-toggle" data-label="Test Toggle 3">
-       
+
     </div>
+
+    <div class="testcontainer">
+
+        <input type="checkbox" class="dq-tick" data-label="Test Tick 1">
+        <input type="checkbox" class="dq-tick" data-label="Test Tick 2">
+        <input type="checkbox" class="dq-tick" data-label="Test Tick 3">
+
+    </div>
+
 
     <script>
 
-        $(".dq-toggle").val(true).toTick()
+        $(".dq-toggle").val(true).toToggle()
+        $(".dq-tick").val(true).toTick()
+        $(".dq-imglist img").toImgListItem()
 
     </script>
 

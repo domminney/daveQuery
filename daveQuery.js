@@ -294,10 +294,10 @@ class ElementCollection extends Array {
                 $(this).find("input").click()
             })
 
-            var label=$("<label />").text(input.data("label")).prependTo(container)
-            
+            var label = $("<label />").text(input.data("label")).prependTo(container)
+
             input.data("dq-onvalupdate", "elem.dispatchEvent(new Event('change'))")
-            
+
             input.on("change", function () {
                 if (this.checked) {
                     $(this).parent().addClass("dq--checked")
@@ -331,10 +331,10 @@ class ElementCollection extends Array {
                 $(this).find("input").click()
             })
 
-            var label=$("<label />").text(input.data("label")).prependTo(container)
-            
+            var label = $("<label />").text(input.data("label")).prependTo(container)
+
             input.data("dq-onvalupdate", "elem.dispatchEvent(new Event('change'))")
-            
+
             input.on("change", function () {
                 if (this.checked) {
                     $(this).parent().addClass("dq--checked")
@@ -342,12 +342,33 @@ class ElementCollection extends Array {
                 }
                 $(this).parent().removeClass("dq--checked")
             })
-            
+
         })
 
         return this
 
     }
+
+    toImgListItem() {
+
+        this.forEach((img) => {
+            if (img.tagName!=='IMG') return false
+            img = $(img)
+            if (img.parent().hasClass("dq--formitem")) return false
+            var container = $("<div />").addClass(["dq--list--item", "dq--list--item--image","dq--formitem"]).insertAfter(img)
+            img.click("event.stopPropagation()")
+            container.append(img)
+            container.append($("<p></p>").text(img.data("label")))
+            container.click(function(){                
+                $(this).find("img").click()                
+            })
+
+        })
+
+        return this
+
+    }
+
 
 }
 
