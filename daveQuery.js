@@ -88,6 +88,64 @@ class ElementCollection extends Array {
         return this
     }
 
+    width(w) {
+
+        if (w === undefined) {
+            return this[0].clientWidth
+        }
+
+        if (!(typeof w === "string" || w instanceof String)) {
+            w = w.toString() + 'rem'
+        }
+        this.forEach((elem) => {
+            elem.style.width = w
+        })
+
+        return this
+    }
+
+    height(h) {
+
+        if (h === undefined) {
+            return this[0].clientHeight
+        }
+        if (!(typeof h === "string" || h instanceof String)) {
+            h = h.toString() + 'rem'
+        }
+        this.forEach((elem) => {
+            elem.style.height = h
+        })
+
+        return this
+    }
+
+    sizeRatio(r) {
+        if (!$.ratioresize) {
+            $(window).on("resize", function () {                               
+                $(".dq--sizeratio").forEach((each) => {
+                    $(each).__doResizeRatio()
+                })
+            })
+            $.ratioresize = true
+        }
+        this.forEach((elem) => {
+            if (!$(elem).data("dq-sizeratio")) {
+                $(elem).addClass("dq--sizeratio")
+            }
+            $(elem).data("dq-sizeratio", r.toString())
+            this.__doResizeRatio(elem)
+        })
+    }
+
+    __doResizeRatio(each) {
+        each=each ?? this
+        var w = parseFloat($(each).width())
+        var r = parseFloat($(each).data("dq-sizeratio"))
+        var h = w * (1 / r)
+        $(each).height(h.toString() + "px")
+        return this
+    }
+
     // dom element insert & removal
 
     append(appendObj) {
@@ -140,7 +198,11 @@ class ElementCollection extends Array {
 
     attr(attr, val) {
         if (typeof val === 'undefined') {
-            return this[0].getAttribute(attr)
+            try {
+                return this[0].getAttribute(attr)
+            } catch (error) {
+                return ""
+            }
         }
 
         this.forEach((elem) => {
@@ -163,6 +225,14 @@ class ElementCollection extends Array {
         return $(this[0].previousElementSibling)
     }
 
+    first() {
+        return $(this[0])
+    }
+
+    last() {
+        return $(this[this.length - 1])
+    }
+
     firstChild() {
         return $(this[0].firstElementChild)
     }
@@ -181,6 +251,14 @@ class ElementCollection extends Array {
 
     parent() {
         return $(this[0].parentNode)
+    }
+
+    children() {
+        var selected = new ElementCollection()
+        this.forEach((elem) => {
+            selected = new ElementCollection(...selected, ...elem.childNodes)
+        })
+        return selected
     }
 
     // text & html content
@@ -219,12 +297,12 @@ class ElementCollection extends Array {
     val(val) {
 
         if (typeof val === 'undefined') {
-            if (this[0].type === 'checkbox') {
+            if (this[0]?.type === 'checkbox') {
                 if (this[0].checked) return 1
                 return 0
             }
             if (this.length) {
-                return this[0].value.toString()
+                return this[0]?.value?.toString()
             }
             return ''
         }
@@ -244,6 +322,33 @@ class ElementCollection extends Array {
         })
 
         return this
+    }
+
+    vals(objVals) {
+        objVals = objVals ?? {}
+
+        if (this.length === 0) return objVals
+
+        this.forEach((elem) => {
+            elem = $(elem)
+            var k = elem.attr("name")
+            if (k) {
+                if (!Object.keys(objVals).includes(k)) {
+                    objVals[k] = elem.val()
+                    return false
+                }
+                if (Array.isArray(objVals[k])) {
+                    objVals[k].push(elem.val())
+                    return false
+                }
+                objVals[k] = [objVals[k], elem.val()]
+            }
+        })
+
+        objVals = this.children().vals(objVals)
+
+
+        return objVals
     }
 
     // display & animations
@@ -352,21 +457,100 @@ class ElementCollection extends Array {
     toImgListItem() {
 
         this.forEach((img) => {
-            if (img.tagName!=='IMG') return false
+            if (img.tagName !== 'IMG') return false
             img = $(img)
             if (img.parent().hasClass("dq--formitem")) return false
-            var container = $("<div />").addClass(["dq--list--item", "dq--list--item--image","dq--formitem"]).insertAfter(img)
+            var container = $("<div />").addClass(["dq--list--item", "dq--list--item--image", "dq--formitem"]).insertAfter(img)
             img.click("event.stopPropagation()")
             container.append(img)
-            container.append($("<p></p>").text(img.data("label")))
-            container.click(function(){                
-                $(this).find("img").click()                
+            var lbl = img.data("label")
+            if (lbl) container.append($("<p></p>").text(lbl))
+            var htmlSel = img.data("html")
+            if (htmlSel) {
+                container.append($(htmlSel))
+            }
+            container.click(function () {
+                $(this).find("img").click()
             })
 
         })
 
         return this
 
+    }
+
+    toListItem() {
+
+        this.forEach((elem) => {
+            elem = $(elem)
+            if (elem[0].tagName !== 'DIV') return false
+            if (elem.parent().hasClass("dq--formitem")) return false
+            var container = $("<div />").addClass(["dq--list--item", "dq--formitem"]).insertAfter(elem)
+            elem.click("event.stopPropagation()")
+            container.append(elem)
+            container.click(function () {
+                $(this).firstChild().click()
+            })
+
+        })
+
+        return this
+
+    }
+
+    toFormItem(options) {
+
+        this.forEach((elem) => {
+
+
+            if (elem.tagName === 'INPUT') {
+                if (elem.type === 'checkbox') {
+                    if (options.checkboxType === 'tick') {
+                        $(elem).toTick()
+                        return false
+                    }
+                    $(elem).toToggle()
+                    return false
+                }
+                if ($(elem).parent().hasClass("dq--formitem")) return false
+                var container = $("<div />").addClass(["dq--formitem", "dq--formitem--input"]).insertAfter(elem).append(elem)
+                container.append($("<label />").text($(elem).data("label"))).click(function () {
+                    $(this).find("input")[0].focus()
+                    event.stopPropagation()
+                })
+                $(elem).on("blur", function () {
+                    if ($(this).val() === '') {
+                        $(this).removeClass("dq--hasvalue")
+                        return false
+                    }
+                    $(this).addClass("dq--hasvalue")
+                })
+                return false
+            }
+
+            if (elem.tagName === 'SELECT') {
+
+                if ($(elem).parent().hasClass("dq--formitem")) return false
+                var container = $("<div />").addClass(["dq--formitem", "dq--formitem--select"]).insertAfter(elem).append(elem)
+                container.prepend($("<label />").text($(elem).data("label")))
+                return false
+            }
+
+            if (elem.tagName === 'TEXTAREA') {
+
+                if ($(elem).parent().hasClass("dq--formitem")) return false
+                var container = $("<div />").addClass(["dq--formitem", "dq--formitem--textarea"]).insertAfter(elem).append(elem)
+                container.prepend($("<label />").text($(elem).data("label")))
+                $(elem).on("keyup", function () {
+                    this.style.cssText = 'height:auto; padding:0';
+                    this.style.cssText = 'height:' + this.scrollHeight + 'px';
+                })
+                return false
+            }
+
+        })
+
+        return this
     }
 
 

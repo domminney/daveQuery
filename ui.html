@@ -11,47 +11,97 @@
     <style>
         body {
             background-color: black;
-            font-family: "montserrat", "arial";
             margin: 0;
             padding: 0;
         }
+
+        * {
+            font-family: "montserrat", "arial";
+        }
+
+        .maxwidth {
+            max-width: 50rem;
+            margin: 0 auto;
+        }
+
+        .dq-video{
+            width:100%;
+            margin:1rem 0;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="dq-imglist">
-        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 1"
-            src="https://unpkg.com/ionicons@5.5.1/dist/svg/bag.svg">
-        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 2"
-            src="https://unpkg.com/ionicons@5.5.1/dist/svg/boat.svg">
-        <img onclick="console.log($(this).data('label'))" data-label="Image List Item 3"
-            src="https://unpkg.com/ionicons@5.5.1/dist/svg/calendar.svg">
+    <div class='maxwidth'>
+
+        <iframe class='dq-video' src="https://www.youtube.com/embed/uSchui3Okow" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+
+        <div class="dq-form">
+            <input type="text" data-label="Name" name="name">
+            <input type="email" data-label="Email" name="email">
+            <select data-label="Country" name="country">
+                <option>UK</option>
+                <option>USA</option>
+                <option>France</option>
+                <option>Canada</option>
+            </select>
+            <textarea data-label="Message" name="message"></textarea>
+            <input type="checkbox" data-label="Agree" name="agree">
+        </div>
+
+        <div class="dq-imglist">
+            <img onclick="console.log($(this).data('label'))" data-label="Image List Item 1"
+                src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Woman_1.jpg">
+            <img onclick="console.log($(this).data('label'))" data-label="Image List Item 2"
+                src="https://upload.wikimedia.org/wikipedia/en/2/2e/David_Palmer_%28Dennis_Haysbert%29.jpg">
+            <img onclick="console.log($(this).parent().find('div'))" data-html=".imagelistitem3"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/EleonoraZiemi%C4%99cka.jpg/330px-EleonoraZiemi%C4%99cka.jpg">
+            <div class='imagelistitem3'>
+                <p>Image List Item 3</p>
+                <p>This has two lines</p>
+            </div>
+        </div>
+        <div class="dq-list">
+            <div onclick="console.log(this)">
+                <p>This is List Item 1</p>
+                <p>This has two lines</p>
+            </div>
+            <div onclick="console.log(this)">
+                <p>This is List Item 2</p>
+            </div>
+        </div>
+
+        <div class="testcontainer">
+
+            <input type="checkbox" class="dq-toggle" data-label="Test Toggle 1">
+            <input type="checkbox" class="dq-toggle" data-label="Test Toggle 2">
+            <input type="checkbox" class="dq-toggle" data-label="Test Toggle 3">
+
+        </div>
+
+        <div class="testcontainer">
+
+            <input type="checkbox" class="dq-tick" data-label="Test Tick 1">
+            <input type="checkbox" class="dq-tick" data-label="Test Tick 2">
+            <input type="checkbox" class="dq-tick" data-label="Test Tick 3">
+
+        </div>
+
     </div>
-
-    <div class="testcontainer">
-
-        <input type="checkbox" class="dq-toggle" data-label="Test Toggle 1">
-        <input type="checkbox" class="dq-toggle" data-label="Test Toggle 2">
-        <input type="checkbox" class="dq-toggle" data-label="Test Toggle 3">
-
-    </div>
-
-    <div class="testcontainer">
-
-        <input type="checkbox" class="dq-tick" data-label="Test Tick 1">
-        <input type="checkbox" class="dq-tick" data-label="Test Tick 2">
-        <input type="checkbox" class="dq-tick" data-label="Test Tick 3">
-
-    </div>
-
 
     <script>
 
         $(".dq-toggle").val(true).toToggle()
         $(".dq-tick").val(true).toTick()
         $(".dq-imglist img").toImgListItem()
-
+        $(".dq-list").children().toListItem()
+        $(".dq-form").children().toFormItem({ checkboxType: "tick" })
+        $(".dq-video").sizeRatio(16/9)
     </script>
 
 
