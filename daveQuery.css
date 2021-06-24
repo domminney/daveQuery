@@ -136,6 +136,7 @@ body {
     margin: var(--dqFormElementSpacing) 0;
     border-radius: var(--dqFormElementBorderRadius);
     position: relative;
+    margin: var(--dqFormElementPadding);
 }
 
 .dq--formitem--input input{

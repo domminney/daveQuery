@@ -121,7 +121,7 @@ class ElementCollection extends Array {
 
     sizeRatio(r) {
         if (!$.ratioresize) {
-            $(window).on("resize", function () {                               
+            $(window).on("resize", function () {
                 $(".dq--sizeratio").forEach((each) => {
                     $(each).__doResizeRatio()
                 })
@@ -138,7 +138,7 @@ class ElementCollection extends Array {
     }
 
     __doResizeRatio(each) {
-        each=each ?? this
+        each = each || this
         var w = parseFloat($(each).width())
         var r = parseFloat($(each).data("dq-sizeratio"))
         var h = w * (1 / r)
@@ -292,17 +292,45 @@ class ElementCollection extends Array {
         return this
     }
 
+
+    // display & animations
+
+    show() {
+
+        this.forEach((elem) => {
+            elem = $(elem)
+            var disp = elem.data("dq-style-display")
+            if (!disp) disp = 'block'
+            elem[0].style.display = disp
+        })
+
+        return this
+    }
+
+    hide() {
+
+        this.forEach((elem) => {
+            elem = $(elem)
+            var disp = elem[0].style.display
+            if (disp === '' || disp === 'none') disp = 'block'
+            elem.data("dq-style-display", disp)
+            elem[0].style.display = 'none'
+        })
+
+        return this
+    }
+
     // form
 
     val(val) {
 
         if (typeof val === 'undefined') {
-            if (this[0]?.type === 'checkbox') {
+            if (this[0].type === 'checkbox') {
                 if (this[0].checked) return 1
                 return 0
             }
             if (this.length) {
-                return this[0]?.value?.toString()
+                return this[0].value.toString()
             }
             return ''
         }
@@ -319,13 +347,14 @@ class ElementCollection extends Array {
                 return false
             }
             elem.value = val
+            if (val) { $(elem).addClass("dq--hasvalue") } else { $(elem).removeClass("dq--hasvalue") }
         })
 
         return this
     }
 
     vals(objVals) {
-        objVals = objVals ?? {}
+        objVals = objVals || {}
 
         if (this.length === 0) return objVals
 
@@ -350,34 +379,6 @@ class ElementCollection extends Array {
 
         return objVals
     }
-
-    // display & animations
-
-    show() {
-
-        this.forEach((elem) => {
-            elem = $(elem)
-            var disp = elem.data("dq-style-display")
-            if (disp === '') disp = 'block'
-            elem[0].style.display = disp
-        })
-
-        return this
-    }
-
-    hide() {
-
-        this.forEach((elem) => {
-            elem = $(elem)
-            var disp = elem[0].style.display
-            if (disp === '') disp = 'block'
-            elem.data("dq-style-display", disp)
-            elem[0].style.display = 'none'
-        })
-
-        return this
-    }
-
     // UI
 
     toToggle() {
@@ -386,7 +387,7 @@ class ElementCollection extends Array {
 
             input = $(input)
 
-            if (input[0]?.type !== 'checkbox') return false
+            if (input[0].type !== 'checkbox') return false
             if (input.parent().hasClass("dq--formitem")) return false
 
             var container = $("<div />").addClass(["dq--toggle--container", "dq--formitem"]).insertAfter(input)
@@ -423,7 +424,7 @@ class ElementCollection extends Array {
 
             input = $(input)
 
-            if (input[0]?.type !== 'checkbox') return false
+            if (input[0].type !== 'checkbox') return false
             if (input.parent().hasClass("dq--formitem")) return false
 
             var container = $("<div />").addClass(["dq--tick--container", "dq--formitem"]).insertAfter(input)
@@ -558,9 +559,10 @@ class ElementCollection extends Array {
 
 var $ = function (selector, from) {
 
-    from = from ?? document
+    from = from || document
 
     if (typeof selector === 'string' || selector instanceof String) {
+        selector = selector.trim()
         if (selector.startsWith("<")) {
             // is html
             var doc = new DOMParser().parseFromString(selector, "text/html")
@@ -576,7 +578,7 @@ var $ = function (selector, from) {
 
 $.fetch = async function (url, body, token, method, headers, otherSettings) {
 
-    otherSettings = otherSettings ?? {}
+    otherSettings = otherSettings || {}
 
     var settings = {
         method: method,
@@ -587,7 +589,7 @@ $.fetch = async function (url, body, token, method, headers, otherSettings) {
         ...otherSettings
     }
 
-    method = method ?? 'POST'
+    method = method || 'POST'
 
     if (method === 'POST') settings.headers['Content-Type'] = 'application/json'
 
@@ -616,4 +618,52 @@ $.post = async function (url, body, token) {
 
 $.get = async function (url, token) {
     return await $.fetch(url, false, token, "GET")
+}
+
+$.__token = ''
+
+$.token = function (t) {
+    if (t === undefined) {
+        if (!$.__token) $.__token == $.cookie("dqt")
+        $.cookie("dqt", $.__token, 1)
+        return $.__token
+    }
+    $.__token = t
+    $.cookie("dqt", t, 1)
+}
+
+$.cookie = function (name, value, days) {
+
+    if (value === undefined) {
+        var cookieArr = document.cookie.split(";")
+        for (var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=")
+            if (name == cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1])
+            }
+        }
+        return ''
+    }
+
+    var cookie = name + "=" + encodeURIComponent(value) + "; path=/"
+    if (!days === undefined) {
+        cookie += "; max-age=" + (daysToLive * 24 * 60 * 60)
+    }
+    document.cookie = cookie
+
+}
+
+$.localStorage = function (key, value) {
+    if (value === undefined) {
+        return localStorage.getItem(key) || ''
+    }
+
+    localStorage.setItem(key, value)
+    return localStorage.getItem(key)
+}
+
+$.addScript = function (src) {
+    var script = document.createElement('script')
+    script.setAttribute('src', src)
+    document.head.appendChild(script)
 }
