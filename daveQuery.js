@@ -12,7 +12,13 @@ class ElementCollection extends Array {
             if (typeof fn === 'string' || fn instanceof String) {
                 fn = Function(fn)
             }
+            if (typeof evt==='string' || evt instanceof String){
             elem.addEventListener(evt, fn)
+            } else {
+                evt.forEach((ev)=>{
+                    elem.addEventListener(ev, fn)
+                })
+            }
         })
         return this
     }
