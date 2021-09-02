@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>testing daveQuery</title>
+    <script src="daveQuery.js"></script>
+
+</head>
+
+<body>
+
+    <div class="testcontainer">
+
+        <template>
+            <div>
+                <p>Name</p>
+                <h3>$name.text</h3>
+                <p>Age</p>
+                <h3>$age.text</h3>
+            </div>
+        </template>
+
+        <div class="list"></div>
+
+
+    </div>
+
+    <script>
+
+        testdata = [{ name: "Dave", age: 41 }, { name: "Chris", age: 43 }, { name: "Ricky", age: 34 }]
+
+        $(".list").repeatData($("template"), testdata, {
+            age:function(v){
+                return v.toString() + ' yrs'
+            },
+            name:function(v){
+                return v.toString().toUpperCase()
+            }
+        }, "<hr />", "<h1>Header</h1>", "<h3>Footer</h3>")
+
+    </script>
+
+
+</body>
+
+</html>

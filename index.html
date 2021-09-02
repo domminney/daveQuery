@@ -44,15 +44,15 @@
         $('.test1').append("<span>Appending to title</span>")
         $("textarea").click("alert('THIS IS THE CONTENT OF TEXTAREA TAKEN FROM THE API\\n\\n' + $('textarea').val())")
 
-        $('h1').on("mouseover",function(){
-            $(this).css("color","red").css({fontSize:"3rem"})
+        $('h1').on("mouseover", function () {
+            $(this).css("color", "red").css({ fontSize: "3rem" })
         })
 
         $("textarea").click(function () {
             $("textarea").val("")
         })
 
-        $(".test3").addClass("selected").on("mouseout",function(){$(this).toggleClass("selected")})
+        $(".test3").addClass("selected").on("mouseout", function () { $(this).toggleClass("selected") })
 
         $("div").removeClass("testcontainer")
 
@@ -60,12 +60,12 @@
 
         $("body").append($(".appended"))
 
-        $("<h3>This is some HTML I Am Appending To</h3>").appendTo("div").click(function(){
+        $("<h3>This is some HTML I Am Appending To</h3>").appendTo("div").click(function () {
             $(this).remove()
         })
         $("<h3>This is some HTML I Am Prepending To</h3>").prependTo("div")
 
-        $(".test2").attr("style","font-size:20px").data("test","testing")
+        $(".test2").attr("style", "font-size:20px").data("test", "testing")
 
         console.log($(".test2").data("test"))
         console.log($("div").firstChild())
@@ -78,12 +78,12 @@
         $("body").lastChild().html("<span>HTML</span>")
         console.log($("div").html())
         console.log($("div").text())
-    
+
         $("body").append("<h5 />")
 
         $("h5").text("<span>This is entered as text</span>")
         $("p").find("span")
-        
+
         async function abc() {
             rsp = await $.get("https://cex.io/api/ohlcv2/hd/20210202/BTC/USD")
             $("textarea").val(JSON.stringify(rsp))
@@ -91,7 +91,8 @@
 
         abc()
 
-
+        var clone = $("textarea").clone()
+        console.log(clone)
 
     </script>
 

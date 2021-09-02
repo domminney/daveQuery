@@ -12,10 +12,10 @@ class ElementCollection extends Array {
             if (typeof fn === 'string' || fn instanceof String) {
                 fn = Function(fn)
             }
-            if (typeof evt==='string' || evt instanceof String){
-            elem.addEventListener(evt, fn)
+            if (typeof evt === 'string' || evt instanceof String) {
+                elem.addEventListener(evt, fn)
             } else {
-                evt.forEach((ev)=>{
+                evt.forEach((ev) => {
                     elem.addEventListener(ev, fn)
                 })
             }
@@ -200,6 +200,13 @@ class ElementCollection extends Array {
         })
     }
 
+    repeatData(template, data,formatFunctions, separator, header, footer) {
+
+        $.repeat(this, template, data, formatFunctions,separator, header, footer)
+
+        return this
+    }
+
     // attributes
 
     attr(attr, val) {
@@ -298,6 +305,16 @@ class ElementCollection extends Array {
         return this
     }
 
+    clone() {
+        return this[0].cloneNode(true)
+    }
+
+    // functions
+
+    each(func){
+        $.each(this,func)
+        return this
+    }
 
     // display & animations
 
@@ -385,6 +402,7 @@ class ElementCollection extends Array {
 
         return objVals
     }
+
     // UI
 
     toToggle() {
@@ -630,7 +648,7 @@ $.__token = ''
 
 $.token = function (t) {
     if (t === undefined) {
-        if (!$.__token) $.__token == $.cookie("dqt")
+        if (!$.__token) $.__token = $.cookie("dqt")
         $.cookie("dqt", $.__token, 1)
         return $.__token
     }
@@ -672,4 +690,91 @@ $.addScript = function (src) {
     var script = document.createElement('script')
     script.setAttribute('src', src)
     document.head.appendChild(script)
+}
+
+$.htmlEncode = function (str) {
+
+    return $("<div />").text(str)[0].innerHTML
+
+}
+
+$.repeat = function (container, template, data,formatFunctions, separator, header, footer) {
+    container = $(container)
+    $(container).children().remove()
+
+    formatFunctions=formatFunctions||{}
+
+    if (data.length) {
+
+        if (header) {
+            header = $(header).clone()
+            container.append(header)
+        }
+        var c = 0
+        data.forEach(d => {
+            if (c > 0) {
+                if (separator) {
+                    separator = $(separator).clone()
+                    container.append(separator)
+                }
+            }
+
+            var html = $(template).html()
+
+            Object.keys(d).forEach(k => {
+
+                var value=d[k]
+
+                if (formatFunctions[k]){
+                    value=formatFunctions[k](value)
+                }
+
+
+                html = html.split("$" + k + ".text").join($.htmlEncode(value))
+                html = html.split("$" + k + ".literal").join(value)
+
+            })
+
+
+
+            container.append($(html))
+
+            c++
+        })
+
+
+        if (footer) {
+            footer = $(footer).clone()
+            container.append(footer)
+        }
+
+    }
+
+    return container
+
+}
+
+$.each=function(arr,func){
+    if (Array.isArray(arr)){
+
+        arr.forEach(e=>{
+            func(e)
+        })
+
+        return true
+    }
+
+    if (typeof arr === 'object' && arr !== null){
+        Object.keys(arr).forEach(k=>{
+            func(k,arr[k])
+        })
+        
+        return true
+
+    }
+
+    func(arr)
+
+    return true
+
 }
